@@ -32,7 +32,7 @@ export default function Home() {
         name="Notifications"
         component={Updates}
         options={{
-          tabBarLabel: 'Updates',
+          tabBarLabel: 'Notificações',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" color={color} size={size} />
           ),
@@ -42,9 +42,9 @@ export default function Home() {
         name="Profile"
         component={Profile}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: 'Em Direto',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" color={color} size={size} />
+            <MaterialCommunityIcons name="play" color={color} size={size} />
           ),
         }}
       />

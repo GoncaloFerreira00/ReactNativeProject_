@@ -1,73 +1,59 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { AntDesign } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; 
-import {View,Text, StyleSheet, Image, TouchableOpacity, ScrollView} from "react-native" 
+import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ActivityIndicator, FlatList } from "react-native"
 
 
 export default function Profile() {
-    return (
-      <ScrollView>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop:100, padding:15 }}>
-        <View><Image source={require("./../../assets/avatar.png")} style={styles.container}/></View>
-        <View style={{marginTop:15}}><Text style={styles.TextAppearence}>Cláudio André</Text></View>
-        <View><Text style={{fontSize: 20, marginTop:10}}>Liga NOS</Text></View>
-       
-        <View>
-        <TouchableOpacity style={styles.Btn} >
-                    <Text style={{padding: 15,fontSize: 14, fontWeight: "700"}}>Editar Equipas Favoritadas</Text>
-                    <AntDesign name="star" size={24} color="rgb(255, 165, 0)" />
-        </TouchableOpacity>
+  const [data, setData] = useState([]);
 
-        <TouchableOpacity style={styles.Btn2}>
-                    <Text style={{padding: 15,fontSize: 14, fontWeight: "700"}}>Editar Liga Favorita</Text>
-                    <AntDesign name="star" size={24} color="rgb(255, 165, 0)" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.Btn2}>
-                    <Text style={{padding: 15,fontSize: 14, fontWeight: "700"}}>Definições</Text>
-                    <Ionicons name="settings-sharp" size={24} color="gray"/>
-        </TouchableOpacity>
-        </View>
-      </View>
-      </ScrollView>
-    );
+  const getData = async () => {
+      const response = await fetch("https://livescore6.p.rapidapi.com/matches/v2/list-live?Category=soccer", {
+        "method": "GET",
+        "headers": {
+          "x-rapidapi-key": "282a30380amshcc06a89fceff160p189daejsn67bf026bf448",
+          "x-rapidapi-host": "livescore6.p.rapidapi.com"
+        }
+      })
+      const json = await response.json();
+      setData(json.Stages);
+      console.log(json.Stages)
   }
 
+  useEffect(() => {
+    getData();
+  }, [])
+
+  return (
+    <ScrollView>
+      <Text style={styles.texttitle}>JOGOS A DECORRER</Text>
+    <View>
+      <FlatList data={data} keyExtractor={({Sid}, index) => Sid} 
+      renderItem={({item}) => (
+        <Text style={styles.text}>{item.Snm + " "}{item.Events[0].T1[0].Nm}{" - "}{item.Events[0].T2[0].Nm}{" (" + item.Cnm + ")"}</Text>
+      )}/>
+    </View>
+    </ScrollView>
+  );
+
+};
 
 const styles = StyleSheet.create({
-  container: {
-    width: 120,
-    height: 110,
-    resizeMode: "center",
-    borderRadius: "300%"
-  },
-
   TextAppearence: {
-    fontSize: 22, 
+    fontSize: 22,
     paddingLeft: 0
   },
 
-  Btn: {
-    flexDirection: "row",
-    padding: 7,
-    marginTop: 55,
-    borderWidth: 1,
-    borderColor: "gray",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 15
-  },
+  text: {
+    borderWidth: 0.1,
+    padding: 5,
+    fontSize: 17,
+    borderColor: "rgba(129, 229, 129, 0.86)"
+  }, 
+  texttitle: {
+    fontSize: 32,
+    textAlign: "center",
+    padding:10
+  }
 
-  Btn2: {
-    flexDirection: "row",
-    padding:7,
-    marginTop: 35,
-    borderWidth: 1,
-    borderColor: "gray",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 15
-}
 });
